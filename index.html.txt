@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玄學問事系統 - 專業玄學諮詢</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4a69bd 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 40px 20px 30px;
+        }
+        .hero h1 {
+            font-size: 2.2em;
+            margin: 0 0 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin: 0;
+        }
+        .card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+        input[type="date"], input[type="email"], textarea, input[type="number"] {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: #f8f9ff;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4a69bd;
+            box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        .code-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .steps {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 20px 0;
+            border-top: 1px solid #e1e8ed;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        .step {
+            text-align: center;
+            flex: 1;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4a69bd, #667eea);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 8px;
+            font-size: 1.1em;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4a69bd, #667eea);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(74, 105, 189, 0.3);
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(74, 105, 189, 0.4);
+        }
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        .privacy {
+            text-align: center;
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 15px;
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.8em; }
+            .card { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🌟 玄學問事</h1>
+            <p>專業玄學顧問為您解答人生疑難，提供精準指引。</p>
+        </div>
+
+        <form id="inquiryForm" action="YOUR_MAKE_WEBHOOK_URL_HERE" method="POST">
+            <div class="card">
+                <label for="birthdate">西曆出生日期 <span style="color:#e74c3c;">*</span></label>
+                <input type="date" id="birthdate" name="birthdate_gregorian" required>
+
+                <label for="question" style="margin-top: 25px;">您的問題（不超過100字） <span style="color:#e74c3c;">*</span></label>
+                <textarea id="question" name="question_raw" maxlength="100" placeholder="請簡述您的疑問，例如：事業發展如何？感情運勢？" required></textarea>
+                <div style="text-align:right; color:#888; font-size:0.9em;">0/100</div>
+
+                <label style="margin-top: 25px;">心中默念問題後，輸入兩組3位數字 <span style="color:#e74c3c;">*</span></label>
+                <div class="code-group">
+                    <input type="number" name="code1" min="000" max="999" placeholder="第一組" pattern="\d{3}" required style="padding:15px;">
+                    <input type="number" name="code2" min="000" max="999" placeholder="第二組" pattern="\d{3}" required style="padding:15px;">
+                </div>
+
+                <label for="email" style="margin-top: 25px;">聯絡電郵 <span style="color:#e74c3c;">*</span></label>
+                <input type="email" id="email" name="customer_email" required>
+            </div>
+
+            <div class="card">
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div>填寫資料</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div>顧問審核</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div>收到解答</div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">提交問事 ▶️</button>
+
+            <div class="privacy">
+                資料僅用於問事，嚴格保密。提交後顧問將於24小時內回覆。
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('inquiryForm');
+        const question = document.getElementById('question');
+        question.addEventListener('input', function() {
+            const counter = document.querySelector('div[style*="text-align:right"]');
+            counter.textContent = this.value.length + '/100';
+        });
+
+        form.addEventListener('submit', function(e) {
+            // 可選：添加載入狀態
+            const btn = form.querySelector('.submit-btn');
+            btn.textContent = '提交中...';
+            btn.disabled = true;
+        });
+    </script>
+</body>
+</html>
