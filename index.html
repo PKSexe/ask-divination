@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>玄學問事系統 - 專業玄學諮詢</title>
+    <title>🌟 玄學問事系統</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -56,7 +56,8 @@
             color: #2c3e50;
             font-size: 1em;
         }
-        input[type="date"], input[type="email"], textarea, input[type="number"] {
+        /* 統一輸入框樣式 */
+        input[type="email"], input[type="number"], textarea {
             width: 100%;
             padding: 15px 18px;
             border: 2px solid #e1e8ed;
@@ -75,11 +76,39 @@
             min-height: 100px;
             font-family: inherit;
         }
+        /* 日期欄位：自訂外框包住原生控件 */
+        .date-wrapper {
+            width: 100%;
+            padding: 0;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            background: #f8f9ff;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .date-wrapper input[type="date"] {
+            width: 100%;
+            border: none;
+            padding: 15px 18px;
+            font-size: 16px;
+            background: transparent;
+            -webkit-appearance: none;
+        }
+        .date-wrapper:focus-within {
+            border-color: #4a69bd;
+            box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.1);
+        }
+        /* 數字碼格仔 */
         .code-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
+        .code-group input[type="number"] {
+            padding: 15px 18px;
+            margin-bottom: 0;
+        }
+        /* 步驟指示 */
         .steps {
             display: flex;
             justify-content: space-around;
@@ -105,6 +134,7 @@
             margin: 0 auto 8px;
             font-size: 1.1em;
         }
+        /* 提交按鈕 */
         .submit-btn {
             width: 100%;
             padding: 18px;
@@ -125,11 +155,22 @@
         .submit-btn:active {
             transform: translateY(0);
         }
+        .loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
         .privacy {
             text-align: center;
             font-size: 0.85em;
             color: #666;
             margin-top: 15px;
+        }
+        .char-count {
+            text-align: right;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 20px;
         }
         @media (max-width: 480px) {
             .hero h1 { font-size: 1.8em; }
@@ -147,19 +188,21 @@
         <form id="inquiryForm" action="https://hook.eu1.make.com/jk6p7pv6wharkehoaoxy2unqfkp39six" method="POST">
             <div class="card">
                 <label for="birthdate">西曆出生日期 <span style="color:#e74c3c;">*</span></label>
-                <input type="date" id="birthdate" name="birthdate_gregorian" required>
-
-                <label for="question" style="margin-top: 25px;">您的問題（不超過100字） <span style="color:#e74c3c;">*</span></label>
-                <textarea id="question" name="question_raw" maxlength="100" placeholder="請簡述您的疑問，例如：事業發展如何？感情運勢？" required></textarea>
-                <div style="text-align:right; color:#888; font-size:0.9em;">0/100</div>
-
-                <label style="margin-top: 25px;">心中默念問題後，輸入兩組3位數字 <span style="color:#e74c3c;">*</span></label>
-                <div class="code-group">
-                    <input type="number" name="code1" min="000" max="999" placeholder="第一組" pattern="\d{3}" required style="padding:15px;">
-                    <input type="number" name="code2" min="000" max="999" placeholder="第二組" pattern="\d{3}" required style="padding:15px;">
+                <div class="date-wrapper">
+                    <input type="date" id="birthdate" name="birthdate_gregorian" required>
                 </div>
 
-                <label for="email" style="margin-top: 25px;">聯絡電郵 <span style="color:#e74c3c;">*</span></label>
+                <label for="question">您的問題（不超過100字） <span style="color:#e74c3c;">*</span></label>
+                <textarea id="question" name="question_raw" maxlength="100" placeholder="請簡述您的疑問，例如：事業發展如何？感情運勢？" required></textarea>
+                <div class="char-count">0/100</div>
+
+                <label>心中默念問題後，輸入兩組3位數字 <span style="color:#e74c3c;">*</span></label>
+                <div class="code-group">
+                    <input type="number" name="code1" min="0" max="999" placeholder="第一組" required>
+                    <input type="number" name="code2" min="0" max="999" placeholder="第二組" required>
+                </div>
+
+                <label for="email">聯絡電郵 <span style="color:#e74c3c;">*</span></label>
                 <input type="email" id="email" name="customer_email" required>
             </div>
 
@@ -180,7 +223,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">提交問事 ▶️</button>
+            <button type="submit" class="submit-btn">立即提交 ▶️</button>
 
             <div class="privacy">
                 資料僅用於問事，嚴格保密。提交後顧問將於24小時內回覆。
@@ -191,16 +234,19 @@
     <script>
         const form = document.getElementById('inquiryForm');
         const question = document.getElementById('question');
+        const charCount = document.querySelector('.char-count');
+        const submitBtn = document.querySelector('.submit-btn');
+
+        // 字數計數器
         question.addEventListener('input', function() {
-            const counter = document.querySelector('div[style*="text-align:right"]');
-            counter.textContent = this.value.length + '/100';
+            charCount.textContent = this.value.length + '/100';
         });
 
+        // 提交載入狀態
         form.addEventListener('submit', function(e) {
-            // 可選：添加載入狀態
-            const btn = form.querySelector('.submit-btn');
-            btn.textContent = '提交中...';
-            btn.disabled = true;
+            submitBtn.textContent = '提交中...';
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
         });
     </script>
 </body>
